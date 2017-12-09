@@ -1,0 +1,22 @@
+image: node
+
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - test
+  - build
+
+test:
+  stage: test
+  script:
+   - npm install
+   - npm test
+
+build:
+  stage: build
+  script:
+  - npm install
+  - cp src/config.json.sample src/config.json
+  - npm run build

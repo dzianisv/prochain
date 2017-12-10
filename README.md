@@ -2,7 +2,7 @@
 
 > Web SPA application for open ProfesshionalChains Project
 
-Live demo is available there: https://prochain.gitlab.io/frontend
+Live demo is available there: https://prochain.gitlab.io
 Project based on golos.io testnet, but can be used with steemit.com.
 You can register a golos.io account there: https://testnet.golos.io
 Have fun!

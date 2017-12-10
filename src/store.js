@@ -41,8 +41,14 @@ const store = {
       this.state.events.slice(0, this.state.events.length)
 
       _.each(res, (item, i) => {
+        if (this.state.events.find(e => e.id === item.id)) { // hack, looks like there are bug in golos
+          return;
+        }
+
         this.state.events.push(item)
       });
+
+      console.log('fetchEvents2', this.state.events);
     });
   },
 

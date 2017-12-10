@@ -96,7 +96,7 @@
         store.createEvent(this.model.title, this.model.description, tags, {
             country: this.model.country,
             city: this.model.city,
-            street: this.model.street,
+            address: this.model.address,
             time: moment(`${this.model.date} ${this.model.time}`).unix()
         }).then(() => {
             this.$emit('close')

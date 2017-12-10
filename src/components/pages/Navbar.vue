@@ -12,7 +12,7 @@
 
       <v-spacer />
 
-      <v-btn flat @click="showNewEventModal = !showNewEventModal">
+      <v-btn flat v-if="user.username" @click="showNewEventModal = !showNewEventModal">
         Create Event
       </v-btn>
 

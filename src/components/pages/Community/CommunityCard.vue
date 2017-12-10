@@ -2,7 +2,7 @@
   <v-flex v-bind="{ [`xs${model.flex}`]: true }" >
     <v-card>
       <v-card-media
-        :src="apiPath + '/' + model.image"
+        :src="model.image"
         height="200px"
       >
         <v-container fill-height fluid>
@@ -27,10 +27,8 @@
               <v-icon>share</v-icon>
             </v-btn>
           </div>
-          <v-card v-for="option in model.options">
-            <div>{{option.title}}</div>
-            <div>{{option.description}}</div>
-          </v-card>
+          <div>{{model.title}}</div>
+          <div>{{model.description}}</div>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-card>

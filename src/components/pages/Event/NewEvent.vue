@@ -20,9 +20,6 @@
                             <v-flex xs12 sm6 md4>
                                 <v-text-field label="Email" v-model="model.email" required persistent-hint hint="Input an organisation contanct information"></v-text-field>
                             </v-flex>
-                            <v-flex xs12 sm6 md4>
-                                <v-text-field label="Image" v-model="model.image_url" required persistent-hint hint="Image url"></v-text-field>
-                            </v-flex>
                             <v-flex xs12>
                                 <v-text-field label="Description" v-model="model.description" textarea required persistent-hint
                                               hint="More information about your event"></v-text-field>
@@ -42,7 +39,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click="show = false">Close</v-btn>
+                    <v-btn color="blue darken-1" flat @click="$emit('close')">Close</v-btn>
                     <v-btn color="blue darken-1" v-bind:disabled="!model.terms" flat @click.native="save()">Save</v-btn>
                 </v-card-actions>
             </v-card>
@@ -55,8 +52,7 @@
   import store from '@/store'
 
   export default {
-    props: ['show', 'petitions'],
-    components: { FileInput },
+    props: ['show'],
     data () {
       return {
         model: { terms: false }

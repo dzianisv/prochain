@@ -1,14 +1,14 @@
 <template>
-  <v-flex v-bind="{ [`xs${petition.flex}`]: true }" >
+  <v-flex v-bind="{ [`xs${model.flex}`]: true }" >
     <v-card>
       <v-card-media
-        :src="apiPath + '/' + petition.image"
+        :src="model.image"
         height="200px"
       >
         <v-container fill-height fluid>
           <v-layout fill-height>
             <v-flex xs12 align-end flexbox>
-              <span class="headline white--text" v-text="petition.title"></span>
+              <span class="headline white--text" v-text="model.title"></span>
             </v-flex>
           </v-layout>
         </v-container>
@@ -31,36 +31,14 @@
             <v-card>
             <v-card-text class="grey lighten-3">
               <div>
-                <h3> {{ petition.title }} </h3>
-                <h6> {{ petition.location }} </h6>
-                <h6> {{ petition.title }} </h6>
-                <div>{{ petition.description }}</div>
-                <span class="grey--text">Уже подписали: {{ petition.votes_count }} </span><br>
-                <v-progress-linear v-bind:value="petition.complete" height="10" color="success"></v-progress-linear>
-                <v-btn :color="voted ? 'success' : 'primary'" dark @click="vote()">Подписать Петицию
-                  <v-icon dark right>check_circle</v-icon>
-                </v-btn>
-
+                <h3> {{ model.title }} </h3>
+                <h6> {{ model.location }} </h6>
+                <div>{{ model.description }}</div>
               </div>
             </v-card-text>
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
-
-        <v-layout row justify-center>
-          <v-flex xs12>
-            <v-slide-y-transition>
-              <v-card-text v-show="show">
-
-                Прогресс:
-
-
-
-              </v-card-text>
-            </v-slide-y-transition>
-          </v-flex>
-
-        </v-layout>
       </v-card-actions>
     </v-card>
   </v-flex>
@@ -71,17 +49,14 @@
   import actions from '@/actions'
   import config from '@/config'
   export default {
-    props: ['petition'],
+    props: ['model'],
     data () {
       return {
-        voted: localStorage.getItem(this.petition._id),
-        show: false,
-        apiPath: config.apiEndpoint
       }
     },
     methods: {
       vote () {
-        actions.vote(this.petition._id).then(r => {
+        actions.vote(this.model._id).then(r => {
           this.voted = true
         }).catch(err => {
           console.error(err)

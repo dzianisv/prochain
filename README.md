@@ -1,4 +1,4 @@
-# ProfeshionalChains
+# ProChain
 
 > Web SPA application for open ProfesshionalChains Project
 

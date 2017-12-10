@@ -1,18 +1,13 @@
 <template>
   <v-flex v-bind="{ [`xs4`]: true }" >
     <v-card>
-      <a :href="url" target="_blank">
-      <v-card-media :src="image" height="200px">
-        <v-container fill-height fluid>
-          <v-layout fill-height>
-            <v-flex xs12 align-end flexbox>
-              <span class="headline white--text" v-text="model.category + ' | ' + model.root_title"></span>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card-media>
+      <a :href="url" target="_blank" style="text-decoration: none">
+        <v-card-media :src="image" height="200px" v-if="image" />
+        <v-card v-else height="200px" color="blue lighten-1">
+        </v-card>
       </a>
-      <v-card-text>
+      <v-card-title primary-title><h3 class="headline mb-0">{{model.root_title}}</h3>
+      <div>
         <div>
           {{time}}
         </div>
@@ -20,9 +15,10 @@
           {{info.city}} {{info.country}}
         </div>
         <div>
-          {{info.address}}
+          {{info.address || '-'}}
         </div>
-      </v-card-text>
+      </div>
+     </v-card-title>
       <v-card-actions class="white">
         <div slot="header">
           <v-spacer></v-spacer>

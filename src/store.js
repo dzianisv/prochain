@@ -1,7 +1,9 @@
 import config from '@/config'
 import Axios from 'axios'
 import _ from 'underscore'
-import blockchain from 'golos-js';
+import blockchain from 'golos-js'
+import moment from 'moment'
+
 // import blockchain from 'steem';
 
 const store = {
@@ -10,6 +12,7 @@ const store = {
     events: [],
     posts: [],
     communities: [],
+    data: [],
     tags: [],
     user: {
     }
@@ -38,20 +41,11 @@ const store = {
   },
 
   fetchEvents() {
-    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
+    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain'].concat(this.state.tags), limit: 100 }, (err, res) => {
       console.log('fetchEvents', res);
       if (err) return;
-      this.state.events.slice(0, this.state.events.length)
-
-      _.each(res, (item, i) => {
-        if (this.state.events.find(e => e.id === item.id)) { // hack, looks like there are bug in golos
-          return;
-        }
-
-        this.state.events.push(item)
-      });
-
-      console.log('fetchEvents2', this.state.events);
+      this.state.data = res;
+      this.filter();
     });
   },
 
@@ -79,10 +73,11 @@ const store = {
     tags = tags.concat(['event']);
     return new Promise((resolve, reject) => {
       blockchain.broadcast.comment(this.state.user.wif, '', 'prochain', this.state.user.username, permlink, title, body, {
-        tags: tags, app: 'prochain', info: info}, function (err, result) {
-          console.log('createEvent', err, result, info);
-          return err ? reject(err.message || err.cause.message) : resolve(result)
-        });
+        tags: tags, app: 'prochain', info: info
+      }, function (err, result) {
+        console.log('createEvent', err, result, info);
+        return err ? reject(err.message || err.cause.message) : resolve(result)
+      });
     })
   },
 
@@ -94,7 +89,7 @@ const store = {
 
   vote(user, permlink) {
     return new Promise((resolve, reject) => {
-      blockchain.broadcast.vote(this.state.user.wif, this.state.user.username, user, permlink, 1, function(err, result) {
+      blockchain.broadcast.vote(this.state.user.wif, this.state.user.username, user, permlink, 1, function (err, result) {
         console.log('vote', err, result);
         return err ? reject(err.message || err.cause.message) : resolve(result);
       });
@@ -103,8 +98,43 @@ const store = {
   search(str) {
     console.log('search', str);
     this.state.tags = str.toLowerCase().split();
-    this.fetchEvents();
-    this.fetchCommunities();
+    this.filter();
+  },
+
+  filter() {
+    this.state.events.splice(0, this.state.events.length)
+
+    _.each(this.state.data, (item, i) => {
+      try {
+        item.metadata = JSON.parse(item.json_metadata);
+      } catch (e) {
+        console.error('filter', item, e);
+      }
+
+      const itemTags = item.metadata.tags.concat([item.title.toLowerCase(), item.body.toLowerCase(), moment.unix(item.metadata.info.time).toISOString()])
+      // filter-out items using search string
+      for (let tag of this.state.tags) {
+        let found = false
+
+        for (let tag1 of itemTags) {
+          if (tag1.indexOf(tag) !== -1) {
+            found = true
+            break
+          }
+        }
+
+        if (!found) {
+          console.log('not found for ', itemTags)
+          return
+        }
+      }
+
+      if (this.state.events.find(e => e.id === item.id)) { // hack, looks like there are bug in golos
+        return;
+      }
+
+      this.state.events.push(item)
+    });
   }
 };
 

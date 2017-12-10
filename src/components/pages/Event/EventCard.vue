@@ -71,16 +71,11 @@
         return this.base + this.model.url
       },
       info() {
-        try {
-          return JSON.parse(this.model.json_metadata).info
-        } catch (e) {
-          console.error(e)
-        }
+        return this.model.metadata.info;
       },
-
       time() {
         try {
-          return moment.unix(JSON.parse(this.model.json_metadata).info.time).toString()
+          return moment.unix(this.model.metadata.info.time).toString()
         } catch (e) {
           console.error(e)
         }

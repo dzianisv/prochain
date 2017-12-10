@@ -2,7 +2,7 @@
 
   <div>
     <v-toolbar dark color="primary">
-      <v-toolbar-side-icon />
+      <!-- <v-toolbar-side-icon /> -->
 
       <router-link to="/">
         <v-toolbar-title class="white--text">

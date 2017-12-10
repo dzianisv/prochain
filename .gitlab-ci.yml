@@ -5,14 +5,8 @@ cache:
   - node_modules/
 
 stages:
-  - test
   - build
-
-test:
-  stage: test
-  script:
-   - npm install
-   - npm test
+  - pages
 
 build:
   stage: build
@@ -20,3 +14,13 @@ build:
   - npm install
   - cp src/config.json.sample src/config.json
   - npm run build
+  artifacts:
+    paths:
+    - dist/
+
+pages:
+  dependencies:
+    - build
+  stage: pages
+  script:
+   - cp -r dist/ public/

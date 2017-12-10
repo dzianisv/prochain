@@ -24,3 +24,6 @@ pages:
   stage: pages
   script:
    - cp -r dist public
+  artifacts:
+    paths:
+    - public/

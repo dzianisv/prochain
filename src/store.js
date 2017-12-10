@@ -41,7 +41,7 @@ const store = {
   },
 
   fetchEvents() {
-    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain'].concat(this.state.tags), limit: 100 }, (err, res) => {
+    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
       console.log('fetchEvents', res);
       if (err) return;
       this.state.data = res;

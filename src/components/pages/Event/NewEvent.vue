@@ -72,13 +72,13 @@
     data () {
       return {
         model: {
-          country: 'Spain',
-          city: 'Madrid',
-          address: 'Unknown street, 1',
-          description: '![blochcain hackhathon](https://i.ytimg.com/vi/CPxoyj-SAQk/hqdefault.jpg "Blockhain hackhathon")',
+          country: '',
+          city: '',
+          address: '',
+          description: '',
           name: store.state.user.username,
-          category: ['IT'],
-          title: 'Blockchain Hackhathon',
+          category: [],
+          title: '',
           date: moment().format('YYYY-MM-DD'),
           time: moment().format('HH:mm')
         },

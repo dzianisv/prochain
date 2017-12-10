@@ -2,11 +2,11 @@
   <div>
     <v-container fluid grid-list-md class="grey lighten-4">
       <v-layout row wrap>
-        <voting v-for="model in events" v-bind:model="model"  v-bind:key="model._id" />
+        <event v-for="model in events" v-bind:model="model"  v-bind:key="model.id" />
       </v-layout>
 
       <v-layout row wrap>
-        <petition v-for="model in communities" v-bind:model="model"  v-bind:key="model._id" />
+        <community v-for="model in communities" v-bind:model="model"  v-bind:key="model.id" />
       </v-layout>
     </v-container>
   </div>

@@ -1,24 +1,30 @@
 <template>
   <div id="app">
     <v-app>
-      <navbar></navbar>
-      <v-container>
-        <router-view/>
-      </v-container>
-    <v-bottom-nav absolute :value="true" :active.sync="e1" color="transparent">
-      <v-btn color='white' flat value="recent">
-        <span>Recent</span>
-        <v-icon>history</v-icon>
-      </v-btn>
-      <v-btn color='white' flat value="favorites">
-        <span>Favorites</span>
-        <v-icon>favorite</v-icon>
-      </v-btn>
-      <v-btn color='white' flat value="nearby">
-        <span>Nearby</span>
-        <v-icon>place</v-icon>
-      </v-btn>
-    </v-bottom-nav>
+      <div style="display: flex; flex-direction: column;">
+        <navbar></navbar>
+
+        <div style="height: 90vh; overflow: auto">
+          <v-container>
+            <router-view/>
+          </v-container>
+        </div>
+
+        <v-bottom-nav absolute :value="true" :active.sync="e1" color="transparent">
+          <v-btn color='white' flat value="recent">
+            <span>Recent</span>
+            <v-icon>history</v-icon>
+          </v-btn>
+          <v-btn color='white' flat value="favorites">
+            <span>Favorites</span>
+            <v-icon>favorite</v-icon>
+          </v-btn>
+          <v-btn color='white' flat value="nearby">
+            <span>Nearby</span>
+            <v-icon>place</v-icon>
+          </v-btn>
+        </v-bottom-nav>
+      </div>
   </v-card>
     </v-app>
   </div>

@@ -1,7 +1,8 @@
 import config from '@/config'
 import Axios from 'axios'
 import _ from 'underscore'
-import blockchain from 'golos';
+import blockchain from 'golos-js';
+// import blockchain from 'steem';
 
 const store = {
   debug: true,
@@ -9,6 +10,7 @@ const store = {
     events: [],
     posts: [],
     communities: [],
+    tags: [],
     user: {
     }
   },
@@ -17,13 +19,13 @@ const store = {
   // Steem methods: https://github.com/steemit/steem-js/tree/master/doc
 
   init() {
-    // blockchain.api.setOptions({ url: 'wss://ws.testnet.golos.io' }); // assuming websocket is work at ws.golos.io
-    // blockchain.config.set('address_prefix','GLS');
-    // blockchain.config.set('chain_id', '782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12');
+    blockchain.config.set('websocket', 'wss://ws.testnet.golos.io');
+    blockchain.config.set('address_prefix', 'GLS');
+    blockchain.config.set('chain_id', '5876894a41e6361bde2e73278f07340f2eb8b41c2facd29099de9deef6cdb679');
 
-    blockchain.api.setSubscribeCallback(0, true, function(err, result) {
-      console.log(err, result);
-    });
+    // blockchain.api.setSubscribeCallback(0, true, function(err, result) {
+    //   console.log(err, result);
+    // });
 
     try {
       Object.assign(this.state.user, JSON.parse(localStorage.getItem('user')))
@@ -33,17 +35,12 @@ const store = {
   },
 
   fetchEvents() {
-    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'], limit: 256 }, (err, res) => {
+    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
       console.log('fetchEvents', res);
-
       if (err) return;
-
-      let flexes = [12, 6, 6, 9, 3, 9, 3, 3, 3, 3, 12]
       this.state.events.slice(0, this.state.events.length)
 
       _.each(res, (item, i) => {
-        item.flex = flexes[i % flexes.length]
-        item.complete = parseInt(Math.random() * 100)
         this.state.events.push(item)
       });
     });
@@ -67,13 +64,15 @@ const store = {
     localStorage.setItem('user', null);
   },
 
-  createEvent(title, description) {
-    const permlink = title.replace(/ /g, '_')
+  createEvent(title, description, tags) {
+    const permlink = new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase()
     const body = description;
+    tags = tags.concat(['event']);
 
-    blockchain.broadcast.comment(this.state.user.wif, null, null, this.user.username, permlink, title, body, { tags: ['prochain', 'event'], app: 'prochain' }, function (err, result) {
-      console.log('createEvent', err, result);
-    });
+    blockchain.broadcast.comment(this.state.user.wif, '', 'prochain', this.state.user.username, permlink, title, body,
+      { tags: tags, app: 'prochain' }, function (err, result) {
+        console.log('createEvent', err, result, tags, permlink, body);
+      });
   },
 
   createCommunity() {
@@ -83,9 +82,18 @@ const store = {
   },
 
   vote(user, permlink) {
-    blockchain.broadcast.upvote(this.state.usern.wif, this.state.user.username, user, permlink, null, function(err, result) {
-      console.log('vote', err, result);
+    return new Promise((resolve, reject) => {
+      blockchain.broadcast.vote(this.state.user.wif, this.state.user.username, user, permlink, 1, function(err, result) {
+        console.log('vote', err, result);
+        return err ? resolve(result) : reject(err);
+      });
     });
+  },
+  search(str) {
+    console.log('search', str);
+    this.state.tags = str.toLowerCase().split();
+    this.fetchEvents();
+    this.fetchCommunities();
   }
 };
 

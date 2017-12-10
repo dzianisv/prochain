@@ -73,6 +73,7 @@
     methods: {
       submitAuthentication () {
         store.login(this.credentials)
+        this.$router.push('/')
       },
 
       submitSignUp () {

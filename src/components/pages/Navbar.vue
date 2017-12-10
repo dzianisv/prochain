@@ -16,9 +16,9 @@
         Create Event
       </v-btn>
 
-      <v-btn flat @click="showNewCommunityModal = !showNewCommunityModal">
+      <!-- <v-btn flat @click="showNewCommunityModal = !showNewCommunityModal">
         Create Community
-      </v-btn>
+      </v-btn> -->
 
       <v-text-field
         light
@@ -59,7 +59,6 @@
 
     <new-petition v-bind:show="showNewEventModal" @close="showNewEventModal=false"/>
     <new-voting v-bind:show="showNewCommunityModal" @close="showNewCommunityModal=false"/>
-
   </div>
 </template>
 

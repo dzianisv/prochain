@@ -12,6 +12,17 @@
         </v-container>
       </v-card-media>
       </a>
+      <v-card-text>
+        <div>
+          {{time}}
+        </div>
+        <div>
+          {{info.city}} {{info.country}}
+        </div>
+        <div>
+          {{info.address}}
+        </div>
+      </v-card-text>
       <v-card-actions class="white">
         <div slot="header">
           <v-spacer></v-spacer>
@@ -24,9 +35,6 @@
           <v-btn icon>
             <v-icon>share</v-icon>
           </v-btn>
-          <v-btn icon @click="showDetails">
-            <v-icon>link</v-icon>
-          </v-btn>
         </div>
       </v-card-actions>
     </v-card>
@@ -37,6 +45,7 @@
 <script>
   import store from '@/store'
   import getImage from 'get-md-image';
+  import moment from 'moment'
 
   export default {
     props: ['model'],
@@ -64,6 +73,21 @@
       },
       url() {
         return this.base + this.model.url
+      },
+      info() {
+        try {
+          return JSON.parse(this.model.json_metadata).info
+        } catch (e) {
+          console.error(e)
+        }
+      },
+
+      time() {
+        try {
+          return moment.unix(JSON.parse(this.model.json_metadata).info.time).toString()
+        } catch (e) {
+          console.error(e)
+        }
       }
     }
   }

@@ -23,4 +23,4 @@ pages:
     - build
   stage: pages
   script:
-   - cp -r dist/ public/
+   - cp -r dist public

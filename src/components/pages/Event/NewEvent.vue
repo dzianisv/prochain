@@ -20,6 +20,12 @@
                             <v-flex xs12 sm6 md4>
                                 <v-text-field v-model="model.address" label="Address" persistent-hint hint="Input street address" />
                             </v-flex>
+                            <v-flex xs6>
+                                 <v-date-picker v-model="model.date"></v-date-picker>
+                            </v-flex>
+                            <v-flex xs6>
+                                 <v-time-picker format="24h" v-model="model.time"></v-time-picker>
+                            </v-flex>
                             <v-flex xs12 sm6 md4>
                                 <v-text-field label="Name" v-model="model.userName" persistent-hint></v-text-field>
                             </v-flex>
@@ -42,6 +48,9 @@
                             </v-flex>
                         </v-layout>
                     </v-container>
+                    <v-alert color="error" icon="warning" value="true" v-if="err">
+                        {{err}}
+                    </v-alert>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -56,6 +65,7 @@
 <script>
   import FileInput from '../../shared/FileInput'
   import store from '@/store'
+  import moment from 'moment'
 
   export default {
     props: ['show'],
@@ -68,8 +78,11 @@
           description: '![blochcain hackhathon](https://i.ytimg.com/vi/CPxoyj-SAQk/hqdefault.jpg "Blockhain hackhathon")',
           name: store.state.user.username,
           category: ['IT'],
-          title: 'Blockchain Hackhathon'
-        }
+          title: 'Blockchain Hackhathon',
+          date: moment().format('YYYY-MM-DD'),
+          time: moment().format('HH:mm')
+        },
+        err: null
       }
     },
     methods: {
@@ -78,7 +91,18 @@
         let tags = [this.model.city, this.model.country].concat(this.model.category.slice())
         tags = tags.map(e => e.toLowerCase())
 
-        store.createEvent(this.model.title, this.model.description, tags)
+        console.log('New event', `${this.model.date} ${this.model.time}`);
+
+        store.createEvent(this.model.title, this.model.description, tags, {
+            country: this.model.country,
+            city: this.model.city,
+            street: this.model.street,
+            time: moment(`${this.model.date} ${this.model.time}`).unix()
+        }).then(() => {
+            this.$emit('close')
+        }).catch(err => {
+            this.err = err;
+        })
       },
       getUploadedFile (e) {
         this.image = e

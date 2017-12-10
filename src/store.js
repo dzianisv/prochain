@@ -64,15 +64,17 @@ const store = {
     localStorage.setItem('user', null);
   },
 
-  createEvent(title, description, tags) {
+  createEvent(title, description, tags, info) {
     const permlink = new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase()
     const body = description;
     tags = tags.concat(['event']);
-
-    blockchain.broadcast.comment(this.state.user.wif, '', 'prochain', this.state.user.username, permlink, title, body,
-      { tags: tags, app: 'prochain' }, function (err, result) {
-        console.log('createEvent', err, result, tags, permlink, body);
-      });
+    return new Promise((resolve, reject) => {
+      blockchain.broadcast.comment(this.state.user.wif, '', 'prochain', this.state.user.username, permlink, title, body, {
+        tags: tags, app: 'prochain', info: info}, function (err, result) {
+          console.log('createEvent', err, result, info);
+          return err ? reject(err.message || err.cause.message) : resolve(result)
+        });
+    })
   },
 
   createCommunity() {
@@ -85,7 +87,7 @@ const store = {
     return new Promise((resolve, reject) => {
       blockchain.broadcast.vote(this.state.user.wif, this.state.user.username, user, permlink, 1, function(err, result) {
         console.log('vote', err, result);
-        return err ? resolve(result) : reject(err);
+        return err ? reject(err.message || err.cause.message) : resolve(result);
       });
     });
   },

@@ -32,6 +32,9 @@ const store = {
     } catch (e) {
       // console.error(e);
     }
+
+    // TODO: redesign
+    setTimeout(this.fetchEvents.bind(this), 5000);
   },
 
   fetchEvents() {

@@ -6,10 +6,7 @@
           {{time}}
         </div>
         <div>
-          {{info.body}}
-        </div>
-        <div>
-          {{info.address || ''}}
+          {{info.location}}
         </div>
         <hr>
 

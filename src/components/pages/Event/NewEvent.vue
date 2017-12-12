@@ -11,7 +11,7 @@
                                 <v-text-field v-model="model.title" label="Title" persistent-hint hint='Brief event description' required />
                             </v-flex>
                             <v-flex xs12>
-                                <v-text-field v-model="model.address" label="Location" persistent-hint hint="Input event location" />
+                                <v-text-field v-model="model.location" label="Location" persistent-hint hint="Input event location" />
                             </v-flex>
 
                             <v-flex xs12 md6>
@@ -65,9 +65,7 @@ export default {
   data() {
     return {
       model: {
-        country: "",
-        city: "",
-        address: "",
+        location: "",
         description: "",
         category: [],
         title: "",
@@ -80,29 +78,21 @@ export default {
   methods: {
     save(data) {
       console.log("Creating event", this.model);
-      let tags = [this.model.city, this.model.country].concat(
-        this.model.category.slice()
-      );
-      tags = tags.map(e => e.toLowerCase());
-
-      console.log("New event", `${this.model.date} ${this.model.time}`);
 
       store
-        .createEvent(this.model.title, this.model.description, tags, {
-          country: this.model.country,
-          city: this.model.city,
-          address: this.model.address,
+        .createEvent(this.model.title, this.model.description, [/* todo extract country and city from the location */], {
+          location: this.model.location,
           time: moment(`${this.model.date} ${this.model.time}`).unix()
         })
         .then(() => {
-            this.$router.go(-1)
+            this.$router.go(-1);
         })
         .catch(err => {
           this.err = err;
         });
     },
     cancel() {
-        this.$emit('close');
+        this.$emit('cancel');
         this.$router.go(-1);
     },
     getUploadedFile(e) {

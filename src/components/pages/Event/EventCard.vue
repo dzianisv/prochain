@@ -11,10 +11,7 @@
           {{time}}
         </div>
         <div>
-          {{info.city}} {{info.country}}
-        </div>
-        <div>
-          {{info.address || '-'}}
+          {{info.location}}
         </div>
       </div>
      </v-card-title>

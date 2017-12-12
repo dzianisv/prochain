@@ -17,7 +17,7 @@ const store = {
     communities: [],
     data: [],
     tags: [],
-    user: null,
+    user: {username: null},
     content: null
   },
 
@@ -61,7 +61,7 @@ const store = {
           author: `author${i}`,
           permlink: `permlink${i}`,
           body: `We invite you to mega event in our city`,
-          json_metadata: JSON.stringify({ tags: ['event'], app: 'prochain', info: { loc: [i, i + 10], time: moment().unix() } })
+          json_metadata: JSON.stringify({ tags: ['event'], app: 'prochain', info: { location: 'Belarus, Minsk, Imaguru', time: moment().unix() } })
         });
       }
 

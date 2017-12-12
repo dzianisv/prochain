@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-app>
-        <v-navigation-drawer fixed clipped app v-model="drawer">
+        <!-- <v-navigation-drawer fixed clipped app v-model="drawer">
           <v-list dense>
             <template v-for="(item, i) in items">
               <v-layout
@@ -56,10 +56,10 @@
               </v-list-tile>
             </template>
           </v-list>
-        </v-navigation-drawer>
+        </v-navigation-drawer> -->
 
         <v-toolbar dark color="primary" clipped-left fixed app align-end justify-end>
-            <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+            <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer" /> -->
             <router-link to="/"> <v-toolbar-title class='white--text'>ProChain</v-toolbar-title></router-link>
             <v-spacer />
 

@@ -7,7 +7,7 @@ import promisify from 'promisify-es6'
 import Vue from 'vue'
 
 // import blockchain from 'steem';
-const DEMO = process.env['NODE_ENV'] === 'development';
+const DEMO = false; // process.env['NODE_ENV'] === 'development';
 
 const store = {
   debug: true,
@@ -18,7 +18,7 @@ const store = {
     data: [],
     tags: [],
     user: {username: null},
-    content: null
+    content: {}
   },
 
   // API methods: https://github.com/GolosChain/golos-js/blob/master/doc/README.md
@@ -80,19 +80,27 @@ const store = {
     }
   },
 
-  fetchEvent(author, permlink) {
-    return promisify(blockchain.api.getContent)(author, permlink)
-      .then((res) => {
+  fetchContent(author, permlink) {
+    return new Promise((resolve, reject) => {
+      blockchain.api.getContent(author, permlink, (err, res) => {
         console.log(`got ${author}:${permlink} content`)
-        this.state.content = res;
-      })
+        try {
+          res.metadata = JSON.parse(res.json_metadata);
+        } catch (e) {
+          console.error('fetchEvent', res, e);
+        }
+
+        Vue.set(this.state, 'content', res);
+        return err ? reject(err) : resolve(res);
+      });
+    })
   },
 
   fetchCommunities() {
   },
 
   login(data) {
-    Object.assign(this.state.user, {
+    this.state.user = Object.assign({}, this.state.user, {
       username: data.username,
       wif: blockchain.auth.toWif(data.username, data.password, 'posting')
     })

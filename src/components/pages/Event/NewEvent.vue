@@ -28,7 +28,7 @@
                             </v-flex>
                             <v-flex xs12>
                                 <v-text-field label="Description" v-model="model.description" textarea required persistent-hint
-                                              hint="More information about your event"></v-text-field>
+                                              hint="Use markdown"></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm6>
                                 <v-select
@@ -80,7 +80,7 @@ export default {
       console.log("Creating event", this.model);
 
       store
-        .createEvent(this.model.title, this.model.description, [/* todo extract country and city from the location */], {
+        .createEvent(this.model.title, this.model.description, this.model.category, {
           location: this.model.location,
           time: moment(`${this.model.date} ${this.model.time}`).unix()
         })

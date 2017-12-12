@@ -11,7 +11,7 @@
         <community v-for="model in communities" v-bind:model="model"  v-bind:key="model.id" />
       </v-layout> -->
 
-    <router-link to="/event/new">
+    <router-link to="/event/new" v-if="user.username">
       <v-btn
         fab
         bottom
@@ -38,8 +38,7 @@ export default {
   props: ['model'],
   data() {
     return {
-      events: store.state.events,
-      communities: store.state.communities
+      state: store.state
     };
   },
   created() {
@@ -48,6 +47,15 @@ export default {
   components: {
     event: EventCard,
     community: CommunityCard
+  },
+
+  computed: {
+    user() {
+      return store.state.user
+    },
+    events() {
+      return store.state.events
+    }
   },
 
   methods: {

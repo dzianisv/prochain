@@ -1,5 +1,5 @@
 <template>
-    <v-card class="ma-1">
+    <v-card class="ma-1" v-if="model.title">
       <v-card-title primary-title><h3 class="headline mb-0">{{model.root_title}}</h3>     </v-card-title>
       <div class="ma-3">
         <div>
@@ -39,51 +39,56 @@
 
 
 <script>
-  import store from '@/store'
-  import moment from 'moment'
+import store from "@/store";
+import moment from "moment";
 
-  export default {
-    init() {
-      store.fetchEvent(this.$route.params.author, this.$route.params.permlink)
-    },
-    data() {
-      return {
-        model: store.state.content
-      }
-    },
-    methods: {
-      vote () {
-        store.vote(this.model.author, this.model.permlink).then(r => {
-          this.voted = true
-        }).catch(err => {
-          console.error(err)
+export default {
+  data() {
+    return {
+      state: store.state
+    };
+  },
+  mounted() {
+    store
+      .fetchContent(this.$route.params.author, this.$route.params.permlink)
+      .catch(err => {
+        console.error(err);
+      });
+  },
+  methods: {
+    vote() {
+      store
+        .vote(this.model.author, this.model.permlink)
+        .then(r => {
+          this.voted = true;
         })
-      },
-      showDetails () {
-        window.open(this.base + this.model.url)
+        .catch(err => {
+          console.error(err);
+        });
+    },
+    showDetails() {
+      window.open(this.base + this.model.url);
+    }
+  },
+  computed: {
+    url() {
+      return this.base + this.model.url;
+    },
+    info() {
+      return this.model.metadata.info;
+    },
+    time() {
+      try {
+        return moment.unix(this.model.metadata.info.time).toString();
+      } catch (e) {
+        console.error(e);
       }
     },
-    computed: {
-      url() {
-        return this.base + this.model.url
-      },
-      info() {
-        return this.model.metadata.info;
-      },
-      time() {
-        try {
-          return moment.unix(this.model.metadata.info.time).toString()
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    },
-    watch: {
-      '$route'(to, from) {
-        store.fetchEvent(to.params.author, to.params.permlink)
-      }
+    model() {
+      return store.state.content
     }
   }
+};
 </script>
 
 

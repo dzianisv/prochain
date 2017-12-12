@@ -1,5 +1,4 @@
 <template>
-  <v-flex v-bind="{ [`xs4`]: true }" >
     <v-card>
       <a :href="url" target="_blank" style="text-decoration: none">
         <v-card-media :src="image" height="200px" v-if="image" />
@@ -34,7 +33,6 @@
         </div>
       </v-card-actions>
     </v-card>
-  </v-flex>
 </template>
 
 

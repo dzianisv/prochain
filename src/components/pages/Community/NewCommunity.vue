@@ -1,6 +1,5 @@
 <template>
     <v-layout row justify-center>
-        <v-dialog v-model="show" persistent max-width="800px">
             <v-card>
                 <v-card-title>
                     <span class="headline">New community</span>
@@ -31,7 +30,6 @@
                     <v-btn color="blue darken-1" v-bind:disabled="canSave()" flat @click.native="save()">Save</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
     </v-layout>
 </template>
 
@@ -49,16 +47,7 @@ export default {
   },
   methods: {
     save() {
-      let formData = new FormData();
-      formData.name = "voting";
-
-      formData.set("image", this.image);
-      formData.set("title", this.model.now);
-      formData.set("userName", this.model.userName);
-      formData.set("description", this.model.description);
-      formData.set("options", this.model.options);
-
-      store.createCommunity(formData);
+      store.createCommunity(this.model);
     },
     getUploadedFile(e) {
       this.image = e;

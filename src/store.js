@@ -5,6 +5,7 @@ import blockchain from 'golos-js'
 import moment from 'moment'
 
 // import blockchain from 'steem';
+const DEMO = process.env['NODE_ENV'] === 'development';
 
 const store = {
   debug: true,
@@ -30,6 +31,14 @@ const store = {
     //   console.log(err, result);
     // });
 
+    blockchain.api.getDynamicGlobalProperties(function (err, result) {
+      console.log('dynamic global properties:', err, result);
+    });
+
+    blockchain.api.getChainProperties(function (err, result) {
+      console.log('current chain properties:', err, result);
+    });
+
     try {
       Object.assign(this.state.user, JSON.parse(localStorage.getItem('user')))
     } catch (e) {
@@ -37,16 +46,32 @@ const store = {
     }
 
     // TODO: redesign
-    setTimeout(this.fetchEvents.bind(this), 5000);
+    setInterval(this.fetchEvents.bind(this), 5000);
   },
 
   fetchEvents() {
-    blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
-      console.log('fetchEvents', res);
-      if (err) return;
-      this.state.data = res;
+    if (DEMO) {
+      for (let i = 0; i < 10; i++) {
+        this.state.data.push({
+          root_title: `Event #${i}`,
+          title: `Event #${i}`,
+          id: i,
+          body: `We invite you to mega event in our city`,
+          json_metadata: JSON.stringify({ tags: ['event'], app: 'prochain', info: { loc: [i, i + 10], time: moment().unix() } })
+        });
+      }
       this.filter();
-    });
+    } else {
+      return new Promise((resolve, reject) => {
+        blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
+          console.log('fetchEvents', res);
+          if (err) return reject(err);
+          this.state.data = res;
+          this.filter();
+          return resolve(res);
+        });
+      });
+    }
   },
 
   fetchCommunities() {

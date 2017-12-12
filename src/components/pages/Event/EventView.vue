@@ -9,10 +9,18 @@
           {{info.body}}
         </div>
         <div>
-          {{info.address || '-'}}
+          {{info.address || ''}}
+        </div>
+        <hr>
+
+        <div class="ma-3">
+          <vue-markdown>{{model.body}}</vue-markdown>
         </div>
 
-        {{model.body}}
+        <div class="ma-3">
+          <v-chip :key="tag" v-for="tag in model.metadata.tags">{{tag}}</v-chip>
+        </div>
+
       </div>
 
       <v-card-actions class="white">
@@ -35,7 +43,6 @@
 
 <script>
   import store from '@/store'
-  import getImage from 'get-md-image';
   import moment from 'moment'
 
   export default {
@@ -60,10 +67,6 @@
       }
     },
     computed: {
-      image() {
-        const img = getImage(this.model.body)
-        return img && img.src
-      },
       url() {
         return this.base + this.model.url
       },

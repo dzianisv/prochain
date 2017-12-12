@@ -84,7 +84,7 @@
               </span>
             </v-layout>
 
-            <router-link v-if="!user" to="login">
+            <router-link v-if="!user" to="/login">
               <v-btn flat>
                 Login
               </v-btn>

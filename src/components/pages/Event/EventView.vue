@@ -1,23 +1,20 @@
 <template>
-    <v-card>
-        <router-link :to="'/event/' + model.author + '/' + model.permlink">
-          <v-card-media :src="image" height="200px" v-if="image" />
-          <v-card v-else height="200px" color="blue lighten-1" />
-        </router-link>
-
-      <v-card-title primary-title><h3 class="headline mb-0">{{model.root_title}}</h3>
-      <div>
+    <v-card class="ma-1">
+      <v-card-title primary-title><h3 class="headline mb-0">{{model.root_title}}</h3>     </v-card-title>
+      <div class="ma-3">
         <div>
           {{time}}
         </div>
         <div>
-          {{info.city}} {{info.country}}
+          {{info.body}}
         </div>
         <div>
           {{info.address || '-'}}
         </div>
+
+        {{model.body}}
       </div>
-     </v-card-title>
+
       <v-card-actions class="white">
         <div slot="header">
           <v-spacer></v-spacer>
@@ -42,10 +39,12 @@
   import moment from 'moment'
 
   export default {
-    props: ['model'],
-    data () {
+    init() {
+      store.fetchEvent(this.$route.params.author, this.$route.params.permlink)
+    },
+    data() {
       return {
-        base: "http://testnet.golos.io"
+        model: store.state.content
       }
     },
     methods: {
@@ -55,6 +54,9 @@
         }).catch(err => {
           console.error(err)
         })
+      },
+      showDetails () {
+        window.open(this.base + this.model.url)
       }
     },
     computed: {
@@ -74,6 +76,11 @@
         } catch (e) {
           console.error(e)
         }
+      }
+    },
+    watch: {
+      '$route'(to, from) {
+        store.fetchEvent(to.params.author, to.params.permlink)
       }
     }
   }

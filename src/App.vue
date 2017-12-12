@@ -65,7 +65,7 @@
 
             <v-layout row>
               <v-text-field solo placeholder="Search..." single-line append-icon="search" :append-icon-cb="() => {}" class="white--text hidden-sm-and-down" @input="onSearchStringChanged" hide-details></v-text-field>
-              <span v-if="user.username">
+              <span v-if="user">
                 <v-btn icon ><v-icon>notifications</v-icon></v-btn>
                 <div style="display: inline-block">
                   <v-menu offset-y>
@@ -84,7 +84,7 @@
               </span>
             </v-layout>
 
-            <router-link v-if="!user.username" to="login">
+            <router-link v-if="!user" to="login">
               <v-btn flat>
                 Login
               </v-btn>

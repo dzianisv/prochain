@@ -3,6 +3,8 @@ import Axios from 'axios'
 import _ from 'underscore'
 import blockchain from 'golos-js'
 import moment from 'moment'
+import promisify from 'promisify-es6'
+import Vue from 'vue'
 
 // import blockchain from 'steem';
 const DEMO = process.env['NODE_ENV'] === 'development';
@@ -15,8 +17,8 @@ const store = {
     communities: [],
     data: [],
     tags: [],
-    user: {
-    }
+    user: null,
+    content: null
   },
 
   // API methods: https://github.com/GolosChain/golos-js/blob/master/doc/README.md
@@ -56,11 +58,15 @@ const store = {
           root_title: `Event #${i}`,
           title: `Event #${i}`,
           id: i,
+          author: `author${i}`,
+          permlink: `permlink${i}`,
           body: `We invite you to mega event in our city`,
           json_metadata: JSON.stringify({ tags: ['event'], app: 'prochain', info: { loc: [i, i + 10], time: moment().unix() } })
         });
       }
+
       this.filter();
+      this.state.content = this.state.events[0];
     } else {
       return new Promise((resolve, reject) => {
         blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
@@ -72,6 +78,14 @@ const store = {
         });
       });
     }
+  },
+
+  fetchEvent(author, permlink) {
+    return promisify(blockchain.api.getContent)(author, permlink)
+      .then((res) => {
+        console.log(`got ${author}:${permlink} content`)
+        this.state.content = res;
+      })
   },
 
   fetchCommunities() {

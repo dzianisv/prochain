@@ -69,7 +69,6 @@ export default {
         city: "",
         address: "",
         description: "",
-        name: store.state.user.username,
         category: [],
         title: "",
         date: moment().format("YYYY-MM-DD"),

@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^0.17.0",
     "golos": "^0.3.32",
+    "promisify-es6": "^1.0.3",
     "steem": "^0.6.7",
     "underscore": "^1.8.3",
     "vue": "^2.5.2",

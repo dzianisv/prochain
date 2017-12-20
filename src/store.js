@@ -4,13 +4,11 @@ import _ from 'underscore'
 import blockchain from 'golos-js'
 import moment from 'moment'
 import promisify from 'promisify-es6'
-import Vue from 'vue'
 
 // import blockchain from 'steem';
 const DEMO = false; // process.env['NODE_ENV'] === 'development';
 
 const store = {
-  debug: true,
   state: {
     events: [],
     posts: [],
@@ -18,12 +16,14 @@ const store = {
     data: [],
     tags: [],
     user: {username: null},
-    content: {}
+    content: {
+      title: null,
+      body: null,
+      metadata: null
+    }
   },
-
   // API methods: https://github.com/GolosChain/golos-js/blob/master/doc/README.md
   // Steem methods: https://github.com/steemit/steem-js/tree/master/doc
-
   init() {
     blockchain.config.set('websocket', 'wss://ws.testnet.golos.io');
     blockchain.config.set('address_prefix', 'GLS');
@@ -52,22 +52,6 @@ const store = {
   },
 
   fetchEvents() {
-    if (DEMO) {
-      for (let i = 0; i < 10; i++) {
-        this.state.data.push({
-          root_title: `Event #${i}`,
-          title: `Event #${i}`,
-          id: i,
-          author: `author${i}`,
-          permlink: `permlink${i}`,
-          body: `We invite you to mega event in our city`,
-          json_metadata: JSON.stringify({ tags: ['event'], app: 'prochain', info: { location: 'Belarus, Minsk, Imaguru', time: moment().unix() } })
-        });
-      }
-
-      this.filter();
-      this.state.content = this.state.events[0];
-    } else {
       return new Promise((resolve, reject) => {
         blockchain.api.getDiscussionsByCreated({ select_tags: ['prochain', 'event'].concat(this.state.tags), limit: 100 }, (err, res) => {
           console.log('fetchEvents', res);
@@ -77,20 +61,19 @@ const store = {
           return resolve(res);
         });
       });
-    }
-  },
+    },
 
   fetchContent(author, permlink) {
     return new Promise((resolve, reject) => {
       blockchain.api.getContent(author, permlink, (err, res) => {
-        console.log(`got ${author}:${permlink} content`)
         try {
           res.metadata = JSON.parse(res.json_metadata);
         } catch (e) {
           console.error('fetchEvent', res, e);
         }
 
-        Vue.set(this.state, 'content', res);
+        Object.assign(this.state.content, res);
+        console.log(`got ${author}:${permlink} content`, this.state.content)
         return err ? reject(err) : resolve(res);
       });
     })
@@ -100,7 +83,7 @@ const store = {
   },
 
   login(data) {
-    this.state.user = Object.assign({}, this.state.user, {
+    Object.assign(this.state.user, {
       username: data.username,
       wif: blockchain.auth.toWif(data.username, data.password, 'posting')
     })

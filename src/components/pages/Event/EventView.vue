@@ -11,7 +11,7 @@
         <hr>
 
         <div class="ma-3">
-          <vue-markdown>{{model.body}}</vue-markdown>
+          <vue-markdown :key="model.author + model.permlink">{{model.body}}</vue-markdown>
         </div>
 
         <div class="ma-3">
@@ -45,7 +45,7 @@ import VueMarkdown from "vue-markdown";
 export default {
   data() {
     return {
-      state: store.state
+      model: store.state.content
     };
   },
   components: {
@@ -73,6 +73,11 @@ export default {
       window.open(this.base + this.model.url);
     }
   },
+  watch: {
+    model(val) {
+      console.log('eventview updated model', val);
+    }
+  },
   computed: {
     url() {
       return this.base + this.model.url;
@@ -86,9 +91,6 @@ export default {
       } catch (e) {
         console.error(e);
       }
-    },
-    model() {
-      return store.state.content
     }
   }
 };

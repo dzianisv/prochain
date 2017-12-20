@@ -41,12 +41,15 @@
 <script>
 import store from "@/store";
 import moment from "moment";
-
+import VueMarkdown from "vue-markdown";
 export default {
   data() {
     return {
       state: store.state
     };
+  },
+  components: {
+    VueMarkdown
   },
   mounted() {
     store
